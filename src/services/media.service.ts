@@ -25,40 +25,16 @@ class MediaServiceWrapper {
 
     public saveMediaToCameraRoll(uri: string[], type: 'photo' | 'video'): Promise<string> {
         return new Promise(resolve => {
-            if (type == 'video') {
-                RNVideoEditor.merge(
-                    uri,
-                    (error: string) => {
-                        resolve(undefined)
-                        Alert.alert('Error: ' + error);
-                    },
-                    async (results: any, file: string) => {
-                        CameraRoll.saveToCameraRoll(file, 'video')
-                            .then(
-                                (data: string) => resolve(data)
-                            )
-                            .catch(
-                                (error: { message: string }) => {
-                                    Alert.alert(error.message);
-                                    resolve(undefined);
-                                }
-                            )
+            CameraRoll.saveToCameraRoll(uri[0], type)
+                .then(
+                    (data: string) => resolve(data)
+                )
+                .catch(
+                    (error: { message: string }) => {
+                        Alert.alert(error.message);
+                        resolve(undefined);
                     }
                 )
-            } else {
-                CameraRoll.saveToCameraRoll(uri[0], type)
-                    .then(
-                        (data: string) => resolve(data)
-                    )
-                    .catch(
-                        (error: { message: string }) => {
-                            Alert.alert(error.message);
-                            resolve(undefined);
-                        }
-                    )
-            }
-
-
         })
     }
 
