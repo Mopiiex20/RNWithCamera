@@ -1,26 +1,23 @@
-import { Button, View, Text, Alert } from "react-native";
+import { Button, View, Alert } from "react-native";
 import React from 'react';
 import { connect } from "react-redux";
 import { RootState } from "../../redux/rootReduser";
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 
 class HomeScreen extends React.Component<any, any> {
-    static navigationOptions = {
-        title: 'Welcome',
-    };
 
-    onSwipe() {
-        Alert.alert('Test')
-    }
     render() {
         const { navigate } = this.props.navigation;
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ marginTop:30, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Button
                     title="Camera"
                     onPress={() => navigate('Camera')}
+                />
+                <Button
+                    title="Contacts"
+                    onPress={() => navigate('Contacts')}
                 />
             </View>
         );

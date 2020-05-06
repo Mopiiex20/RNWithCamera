@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Text, View, Button, TextInput } from 'react-native';
-import { req } from '../../requset';
 import { connect } from 'react-redux';
 import { doLogin } from '../../redux/actions/login'
 
