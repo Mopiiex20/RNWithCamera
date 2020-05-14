@@ -1,12 +1,19 @@
-import { PermissionsAndroid, View, Text } from "react-native";
+import { PermissionsAndroid, View, Text, ScrollView } from "react-native";
 import React from 'react';
 import { connect } from "react-redux";
 import { RootState } from "../../redux/rootReduser";
+import Contacts from 'react-native-contacts';
+import { ContactView } from "../../components/camera/contact-card";
 
+type State = {
+    permissionsContacts: boolean,
+    contacts: Contacts.Contact[]
+}
 
-class ContactsScreen extends React.Component<any, any> {
+export default class ContactsScreen extends React.Component<any, State> {
     state: any = {
-        permissionsContacts: false
+        permissionsContacts: false,
+        contacts: []
     }
 
     componentDidMount() {
@@ -14,36 +21,43 @@ class ContactsScreen extends React.Component<any, any> {
             (response: boolean) => {
                 if (!response) {
                     PermissionsAndroid.request('android.permission.READ_CONTACTS').then(
-                        (granted) => {
-                            console.log(granted);
-                            
-                            this.setState({ permissionsContacts: granted})
+                        (status) => {
+                            this.setState({ permissionsContacts: status === 'granted' ? true : false });
+                            Contacts.getAll(
+                                (error: any, contacts: Contacts.Contact[]) => {
+                                    this.setState({ contacts: [...contacts] });
+                                }
+                            )
+                        }
+                    )
+                } else {
+                    Contacts.getAll(
+                        (error: any, contacts: Contacts.Contact[]) => {
+                            this.setState({ contacts: [...contacts], permissionsContacts: response });
                         }
                     )
                 }
-
             }
         )
     }
 
     render() {
-        const { navigate } = this.props.navigation;
-
         return (
-            <View style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <ScrollView style={{ marginBottom: 30, marginHorizontal: 10, flexDirection: 'column' }}>
                 {
                     this.state.permissionsContacts ?
-                        <Text>Contacts</Text>
+                        this.state.contacts.length !== 0 ?
+                            this.state.contacts.map(
+                                (contact: Contacts.Contact, index: number) => {
+                                    return (
+                                        <ContactView key={index} contact={contact} />
+                                    )
+                                }
+                            ) : null
                         :
                         <Text>NO Contacts found :(</Text>
                 }
-            </View>
+            </ScrollView>
         );
     }
 }
-
-const mapStateToProps = (state: RootState) => ({
-    login: state.login.loginData
-});
-
-export default connect(mapStateToProps)(ContactsScreen)

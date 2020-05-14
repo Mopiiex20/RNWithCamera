@@ -8,7 +8,6 @@ class HomeScreen extends React.Component<any, any> {
 
     render() {
         const { navigate } = this.props.navigation;
-
         return (
             <View style={{ marginTop:30, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Button
